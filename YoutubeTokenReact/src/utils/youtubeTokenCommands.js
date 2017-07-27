@@ -37,8 +37,11 @@ class YoutubeTokenCommands {
     addUserSubscriptionCount(user, account) {
         return this.youtubeContract
             // TODO: value needs rejigging.
-            .flatMap(youtubeContract => youtubeContract.registerUser(user, account,
-                { from: account, value: this.web3.toWei(0.01, 'ether'), gas: 300000 }))
+            .flatMap(youtubeContract => youtubeContract.registerUser(user, account, {
+                from: account,
+                value: this.web3.toWei(0.01, 'ether'),
+                gas: 300000
+            }))
             .map(tx => tx.tx)
             .do(txHash => console.log("Submitted user registration tx: " + txHash))
     }
