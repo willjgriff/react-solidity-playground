@@ -4,7 +4,7 @@ import Rx from 'rxjs/Rx'
 class YoutubeTokenCommands {
 
 	constructor(web3) {
-		const contract = require('truffle-contract')
+	const contract = require('truffle-contract')
 		const youtubeToken = contract(YoutubeToken)
 		youtubeToken.setProvider(web3.currentProvider)
 
