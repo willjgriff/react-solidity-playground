@@ -23,17 +23,19 @@ contract YoutubeToken is usingOraclize, StandardToken {
 	}
 
 	event LogBalanceUpdatedWithSubscriptionCount(string subscriber, uint subscriptionCount);
-	event DebugQuery(string query);
+	event DebugOraclizeQuery(string query);
 
-	function YouTubeToken() {
+	function YoutubeToken() {
 		// TODO: Delete this, for testing with private chain (testrpc) only
-		OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+		/*OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);*/
+		oraclize_setCustomGasPrice(21000000000 wei);
 		queryUpdater = msg.sender;
+
 
 		queryString = "https://www.googleapis.com/youtube/v3/channels?part=statistics";
 		userParam = "forUsername";
 		jsonPath = "items.0.statistics.subscriberCount";
-		apiKey = "AIzaSyBZARNvH2aCLG6PSeTGlOIQT9yTM4NXr0s";
+		apiKey = "AIzaSyA5JzHxx1JIx8ogUj8v9N5O-PD9X4LepYU";
 	}
 
 	modifier onlyQueryUpdater() { if (queryUpdater != msg.sender) revert(); _; }
@@ -94,9 +96,9 @@ contract YoutubeToken is usingOraclize, StandardToken {
 		address usersAddress = parseAddr(response);
 		string memory username = queriedUsers[oraclizeId].username;
 		string memory fullQueryString = createOraclizeRequestString(username);
-		DebugQuery(fullQueryString);
+		DebugOraclizeQuery(fullQueryString);
 
-		bytes32 queryId = oraclize_query(ORACLIZE_DATA_SOURCE, fullQueryString);
+		bytes32 queryId = oraclize_query(ORACLIZE_DATA_SOURCE, fullQueryString, 4000000);
 		queriedUsers[queryId] = QueriedUser(username, usersAddress);
 	}
 
