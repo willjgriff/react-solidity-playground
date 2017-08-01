@@ -1,0 +1,26 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Rx from 'rxjs/Rx'
+
+var TotalTokensCount = (props) => {
+    return (<p>Total Youtube Tokens: {props.totalTokens}</p>)
+}
+
+export default class TotalTokensCountContainer extends Component {
+
+    state = { totalTokens: 0 }
+
+    static propTypes = {
+        tokenUpdatedTrigger: PropTypes.instanceOf(Rx.Observable)
+    }
+
+    componentWillMount() {
+        this.props.tokenUpdatedTrigger
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.getTotalYoutubeTokens())
+            .subscribe(totalTokens => this.setState({ totalTokens: totalTokens }))
+    }
+
+    render() {
+        return (<TotalTokensCount totalTokens={this.state.totalTokens} />)
+    }
+}
