@@ -27,10 +27,9 @@ contract YoutubeToken is usingOraclize, StandardToken {
 
 	function YoutubeToken() {
 		// TODO: Delete this, for testing with private chain (testrpc) only
-		/*OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);*/
+		OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
 		oraclize_setCustomGasPrice(21000000000 wei);
 		queryUpdater = msg.sender;
-
 
 		queryString = "https://www.googleapis.com/youtube/v3/channels?part=statistics";
 		userParam = "forUsername";
@@ -98,7 +97,7 @@ contract YoutubeToken is usingOraclize, StandardToken {
 		string memory fullQueryString = createOraclizeRequestString(username);
 		DebugOraclizeQuery(fullQueryString);
 
-		bytes32 queryId = oraclize_query(ORACLIZE_DATA_SOURCE, fullQueryString, 4000000);
+		bytes32 queryId = oraclize_query(ORACLIZE_DATA_SOURCE, fullQueryString, 400000);
 		queriedUsers[queryId] = QueriedUser(username, usersAddress);
 	}
 

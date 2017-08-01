@@ -15,10 +15,15 @@ class YoutubeTokenCommands {
             .shareReplay(1)
     }
 
+    // These two functions don't belong here. They should be extracted into a separate Web3Utils or similar.
     getAccounts() {
         return Rx.Observable
             .from(this.web3.eth.accounts)
             .do(account => console.log(account))
+    }
+
+    getCoinbase() {
+        return this.web3.eth.coinbase
     }
 
     getOraclizeCost() {
@@ -34,7 +39,10 @@ class YoutubeTokenCommands {
                 (balance, tokenDecimals) => { return { balance: balance, tokenDecimals: tokenDecimals } }))
             .map(zipResult => { zipResult.tokenDecimals = new BigNumber("1.0e+" + zipResult.tokenDecimals); return zipResult })
             .map(editedZipResult => editedZipResult.balance.div(editedZipResult.tokenDecimals))
-            .map(balanceBigNumber => balanceBigNumber.toNumber())
+            .map(balanceBigNumber => { return {
+                account: account,
+                balance: balanceBigNumber.toNumber()
+            }})
             .do(balance => console.log("Account: " + account + " Balance: " + balance))
     }
 
@@ -45,13 +53,13 @@ class YoutubeTokenCommands {
             .do(totalSupply => console.log("Total Supply: " + totalSupply))
     }
 
-    addUserSubscriptionCount(user, account) {
+    addUserSubscriptionCount(user) {
         return this.youtubeToken
             .zip(this.getOraclizeCost(), (youtubeToken, oraclizeCost) => { return { youtubeToken: youtubeToken, oraclizeCost: oraclizeCost } })
-            .flatMap(zipResult => zipResult.youtubeToken.registerUser(user, account, {
-                from: account,
+            .flatMap(zipResult => zipResult.youtubeToken.registerUser(user, this.getCoinbase(), {
+                from: this.getCoinbase(),
                 // value: zipResult.oraclizeCost,
-                value: zipResult.oraclizeCost + (4000000 * 21000000000),
+                value: zipResult.oraclizeCost + (400000 * 21000000000),
                 gas: 1000000
             }))
             .map(tx => tx.tx)

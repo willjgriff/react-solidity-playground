@@ -8,7 +8,7 @@ module.exports = {
     },
     testnet: {
         host: "localhost",
-        port: 8546,
+        port: 8545,
         network_id: 4,
         gas: 4000000,
         gasPrice: 21000000111
