@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import getWeb3 from './utils/getWeb3'
-import youtubeToken from './youtubeTokenCommands.js'
+import youtubeTokenBridge from './YoutubeTokenBridge.js'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
@@ -16,14 +16,13 @@ class RegisterUserInput extends Component {
 
     state = { inputYoutubeUser: "" }
 
-    // Note that 'defaultProps' seems pointless here, maybe I'm missing something though
     static propTypes = {
         youtubeTokenObservable: PropTypes.instanceOf(Rx.Observable)
     }
 
     registerUser = () => {
         this.props.youtubeTokenObservable
-            .flatMap(youtubeToken => youtubeToken.addUserSubscriptionCount(this.state.inputYoutubeUser))
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.addUserSubscriptionCount(this.state.inputYoutubeUser))
             .subscribe()
     }
 
@@ -34,7 +33,7 @@ class RegisterUserInput extends Component {
     render() {
         return (
             <label>
-                <p>Register user:</p>
+                <p>Register users subscription count to current Ether address:</p>
                 <input placeholder="Youtube username" type="text" onChange={this.setYoutubeUser}/>
                 <button onClick={this.registerUser}>Register subscription count</button>
             </label>
@@ -54,20 +53,25 @@ class RegisterUserDetails extends Component {
         accountBalance: ""
     }
 
-    // Remember to do these.
-    static propTypes = {}
+    static propTypes = {
+        tokenUpdatedTrigger: PropTypes.instanceOf(Rx.Observable),
+        youtubeTokenObservable: PropTypes.instanceOf(Rx.Observable),
+        updateState: PropTypes.func
+    }
 
-    static defaultProps = {}
+    static defaultProps = {
+        updateState: () => {}
+    }
 
     componentWillMount() {
         this.updateOraclizeCost()
 
         this.props.youtubeTokenObservable
-            .flatMap(youtubeToken => youtubeToken.debugOraclizeQuery())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.debugOraclizeQuery())
             .subscribe(logResponse => this.setState({ oraclizeQuery: logResponse.args.query }))
 
         this.props.youtubeTokenObservable
-            .flatMap(youtubeToken => youtubeToken.logSubscriptionCountUpdated())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.logSubscriptionCountUpdated())
             .subscribe(logResponse => {
                 this.updateOraclizeCost()
                 this.updateBalance()
@@ -81,32 +85,39 @@ class RegisterUserDetails extends Component {
 
     updateOraclizeCost() {
         this.props.youtubeTokenObservable
-            .flatMap(youtubeToken => youtubeToken.getOraclizeCost())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.getOraclizeCost())
             .subscribe(oraclizeFee => this.setState({ oraclizeFee: oraclizeFee }))
     }
 
     updateBalance() {
         this.props.tokenUpdatedTrigger
-            .map(youtubeToken => youtubeToken.getCoinbase())
+            .map(youtubeTokenBridge => youtubeTokenBridge.getCoinbase())
             .flatMap(account => this.props.youtubeTokenObservable
-                .flatMap(youtubeToken => youtubeToken.getBalanceOf(account)))
+                .flatMap(youtubeTokenBridge => youtubeTokenBridge.getBalanceOf(account)))
             .subscribe(balance => this.setState({ accountUpdated: balance.account, accountBalance: balance.balance }))
     }
 
     render() {
         return (
             <div>
-                <RegisterUserInput youtubeTokenObservable={this.props.youtubeTokenObservable}/>
-                <p>&nbsp;&nbsp;&nbsp;Oraclize query: {this.state.oraclizeQuery}</p>
-                <p>&nbsp;&nbsp;&nbsp;Oraclize query cost: {this.state.oraclizeFee}</p>
-                <p>&nbsp;&nbsp;&nbsp;User updated: {this.state.updatedUser} Subscription count: {this.state.updatedSubscriptionCount}</p>
-                <p>&nbsp;&nbsp;&nbsp;Updated account: {this.state.accountUpdated} Balance: {this.state.accountBalance}</p>
+                <p>&nbsp;&nbsp;&nbsp;Oraclize query: {this.state.oraclizeQuery}
+                <br/>&nbsp;&nbsp;&nbsp;Oraclize query cost: {this.state.oraclizeFee}</p>
+
+                <p>&nbsp;&nbsp;&nbsp;User registered: {this.state.updatedUser}
+                <br/>&nbsp;&nbsp;&nbsp;Subscription count: {this.state.updatedSubscriptionCount}</p>
+
+                <p>&nbsp;&nbsp;&nbsp;Updated account: {this.state.accountUpdated}
+                <br/>&nbsp;&nbsp;&nbsp;Account balance: {this.state.accountBalance}</p>
             </div>
         )
     }
 }
 
-class TokenCount extends Component {
+var TotalTokensCount = (props) => {
+    return (<p>Total Youtube Tokens: {props.totalTokens}</p>)
+}
+
+class TotalTokensCountContainer extends Component {
 
     state = { totalTokens: 0 }
 
@@ -116,22 +127,22 @@ class TokenCount extends Component {
 
     componentWillMount() {
         this.props.tokenUpdatedTrigger
-            .flatMap(youtubeToken => youtubeToken.getTotalYoutubeTokens())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.getTotalYoutubeTokens())
             .subscribe(totalTokens => this.setState({ totalTokens: totalTokens }))
     }
 
     render() {
-        return (<p>Total Youtube Tokens: {this.state.totalTokens}</p>)
+        return (<TotalTokensCount totalTokens={this.state.totalTokens} />)
     }
 }
 
-export default class App extends Component {
+class YoutubeTokenInterface extends Component {
 
     constructor() {
         super()
 
         const youtubeTokenObservable = Rx.Observable.fromPromise(getWeb3)
-            .map(results => new youtubeToken(results.web3))
+            .map(results => new youtubeTokenBridge(results.web3))
             // Not great vvvvv
             .do(null, error => console.log(error))
             .shareReplay(1)
@@ -156,25 +167,35 @@ export default class App extends Component {
 
     render() {
         return (
-            <div className="App">
-                <nav className="navbar pure-menu pure-menu-horizontal">
-                    <a href="#" className="pure-menu-heading pure-menu-link">Basic Contract Interface</a>
-                </nav>
-
-                <main className="container">
-                    <div className="pure-g">
-                        <div className="pure-u-1-1">
-                            <h1>Youtube Subscription Count Token</h1>
-                            <RegisterUserDetails
-                                tokenUpdatedTrigger={this.state.tokenUpdatedTrigger}
-                                youtubeTokenObservable={this.state.youtubeTokenObservable}
-                                updateState={() => this.updateState()}
-                            />
-                            <TokenCount tokenUpdatedTrigger={this.state.tokenUpdatedTrigger} />
-                        </div>
-                    </div>
-                </main>
+            <div>
+                <h1>Youtube Subscription Count Token</h1>
+                <RegisterUserInput youtubeTokenObservable={this.state.youtubeTokenObservable}/>
+                <RegisterUserDetails
+                    tokenUpdatedTrigger={this.state.tokenUpdatedTrigger}
+                    youtubeTokenObservable={this.state.youtubeTokenObservable}
+                    updateState={() => this.updateState()}
+                />
+                <TotalTokensCountContainer tokenUpdatedTrigger={this.state.tokenUpdatedTrigger} />
             </div>
-        );
+        )
     }
+}
+
+// export default class App extends Component {
+export default () => {
+    return (
+        <div className="App">
+            <nav className="navbar pure-menu pure-menu-horizontal">
+                <a href="#" className="pure-menu-heading pure-menu-link">Basic Contract Interface</a>
+            </nav>
+
+            <main className="container">
+                <div className="pure-g">
+                    <div className="pure-u-1-1">
+                        <YoutubeTokenInterface />
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
 }

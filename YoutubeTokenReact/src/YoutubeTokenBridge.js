@@ -2,7 +2,7 @@ import YoutubeToken from '../build/contracts/YoutubeToken.json'
 import Rx from 'rxjs/Rx'
 import BigNumber from 'bignumber.js'
 
-class YoutubeTokenCommands {
+class YoutubeTokenBridge {
 
     constructor(web3) {
         const contract = require('truffle-contract')
@@ -15,7 +15,7 @@ class YoutubeTokenCommands {
             .shareReplay(1)
     }
 
-    // These two functions don't belong here. They should be extracted into a separate Web3Utils or similar.
+    // These two functions don't really belong here. They should be extracted into a separate Web3Utils or similar
     getAccounts() {
         return Rx.Observable
             .from(this.web3.eth.accounts)
@@ -90,4 +90,4 @@ class YoutubeTokenCommands {
     }
 }
 
-export default YoutubeTokenCommands
+export default YoutubeTokenBridge
