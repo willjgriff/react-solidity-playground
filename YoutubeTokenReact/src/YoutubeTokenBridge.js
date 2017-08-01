@@ -2,6 +2,7 @@ import YoutubeToken from '../build/contracts/YoutubeToken.json'
 import Rx from 'rxjs/Rx'
 import BigNumber from 'bignumber.js'
 
+// TODO: Get rid of all the 'do' logging statements
 class YoutubeTokenBridge {
 
     constructor(web3) {
@@ -59,6 +60,7 @@ class YoutubeTokenBridge {
             .flatMap(zipResult => zipResult.youtubeToken.registerUser(user, this.getCoinbase(), {
                 from: this.getCoinbase(),
                 // value: zipResult.oraclizeCost,
+                // TODO: The extra gas here is for the Oraclize callback cost, it should be dynamic and determined by the contract.
                 value: zipResult.oraclizeCost + (400000 * 21000000000),
                 gas: 1000000
             }))
