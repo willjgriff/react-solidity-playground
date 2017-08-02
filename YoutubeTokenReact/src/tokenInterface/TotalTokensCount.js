@@ -6,6 +6,14 @@ var TotalTokensCount = (props) => {
     return (<p>Total Youtube Tokens: {props.totalTokens}</p>)
 }
 
+TotalTokensCount.propTypes = {
+    totalTokens: PropTypes.number
+}
+
+TotalTokensCount.defaultProps = {
+    totalTokens: 0
+}
+
 export default class TotalTokensCountContainer extends Component {
 
     state = { totalTokens: 0 }

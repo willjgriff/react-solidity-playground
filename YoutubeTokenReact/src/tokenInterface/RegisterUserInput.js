@@ -2,8 +2,27 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-// TODO: Should have container component
-export default class RegisterUserInput extends Component {
+const RegisterUserInput = (props) => {
+    return (
+        <label>
+            <p>Register users subscription count to current Ether address:</p>
+            <input placeholder="Youtube username" type="text" onChange={props.setYoutubeUser}/>
+            <button onClick={props.registerUser}>Register subscription count</button>
+        </label>
+    )
+}
+
+RegisterUserInput.propTypes = {
+    setYoutubeUser: PropTypes.func,
+    registerUser: PropTypes.func
+}
+
+RegisterUserInput.defaultProps = {
+    setYoutubeUser: () => {},
+    registerUser: () => {}
+}
+
+export default class RegisterUserInputContainer extends Component {
 
     state = { inputYoutubeUser: "" }
 
@@ -22,12 +41,6 @@ export default class RegisterUserInput extends Component {
     }
 
     render() {
-        return (
-            <label>
-                <p>Register users subscription count to current Ether address:</p>
-                <input placeholder="Youtube username" type="text" onChange={this.setYoutubeUser}/>
-                <button onClick={this.registerUser}>Register subscription count</button>
-            </label>
-        )
+        return <RegisterUserInput setYoutubeUser={this.setYoutubeUser} registerUser={this.registerUser} />
     }
 }

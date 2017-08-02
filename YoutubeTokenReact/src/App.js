@@ -6,7 +6,6 @@ import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
 
-// export default class App extends Component {
 export default () => {
     return (
         <div className="App">
