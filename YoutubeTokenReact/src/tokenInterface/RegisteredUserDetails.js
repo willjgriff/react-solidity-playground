@@ -5,8 +5,8 @@ import Rx from 'rxjs/Rx'
 var RegisteredUserDetails = (props) => {
     return (
         <div>
-            <p>&nbsp;&nbsp;&nbsp;User registered (from count updated event): {props.updatedUser}
-            <br/>&nbsp;&nbsp;&nbsp;Subscription count (from count updated event): {props.updatedSubscriptionCount}</p>
+            <p>&nbsp;&nbsp;&nbsp;User registered (from registered updated event): {props.updatedUser}
+            <br/>&nbsp;&nbsp;&nbsp;Subscription count (from registered updated event): {props.updatedSubscriptionCount}</p>
         </div>
     )
 }
@@ -40,7 +40,7 @@ export default class RegisteredUserDetailsContainer extends Component {
                     updatedUser: logResponse.args.subscriber,
                     updatedSubscriptionCount: logResponse.args.subscriptionCount.toNumber()
                 })
-            })
+            }, error => console.log(error))
     }
 
     render() {

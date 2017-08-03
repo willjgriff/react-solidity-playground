@@ -35,11 +35,11 @@ export default class OraclizeDetailsContainer extends Component {
     componentWillMount() {
         this.props.tokenUpdatedTrigger
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.debugOraclizeQuery())
-            .subscribe(logResponse => this.setState({ oraclizeQuery: logResponse.args.query }))
+            .subscribe(logResponse => this.setState({ oraclizeQuery: logResponse.args.query }), error => console.log(error))
 
         this.props.tokenUpdatedTrigger
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.getOraclizeCost())
-            .subscribe(oraclizeFee => this.setState({ oraclizeFee }))
+            .subscribe(oraclizeFee => this.setState({ oraclizeFee }), error => console.log(error))
     }
 
     render() {

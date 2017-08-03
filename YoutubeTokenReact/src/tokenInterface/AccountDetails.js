@@ -35,7 +35,8 @@ export default class AccountDetailsContainer extends Component {
     componentWillMount() {
         this.props.tokenUpdatedTrigger
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.getBalanceOf(youtubeTokenBridge.getCoinbase()))
-            .subscribe(balance => this.setState({ accountUpdated: balance.account, accountBalance: balance.balance }))
+            .subscribe(balance => this.setState({ accountUpdated: balance.account, accountBalance: balance.balance }),
+                error => console.log(error))
     }
 
     render() {

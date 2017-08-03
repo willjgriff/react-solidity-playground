@@ -16,7 +16,10 @@ var YoutubeTokenInterface = (props) => {
             <h1>Youtube Subscription Count Token</h1>
             <h3>Open console to see feedback of request</h3>
 
-            <RegisterUserInputContainer youtubeTokenObservable={props.youtubeTokenObservable}/>
+            <RegisterUserInputContainer
+                youtubeTokenObservable={props.youtubeTokenObservable}
+                tokenUpdatedTrigger={props.tokenUpdatedTrigger}
+            />
 
             <OraclizeDetailsContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger} />
             <RegisteredUserDetailsContainer youtubeTokenObservable={props.youtubeTokenObservable}/>
@@ -43,8 +46,6 @@ export default class YoutubeTokenInterfaceContainer extends Component {
 
         const youtubeTokenObservable = Rx.Observable.fromPromise(getWeb3)
             .map(results => new youtubeTokenBridge(results.web3))
-            // TODO Consumption of error is poor. Put in individual subscriptions.
-            .do(null, error => console.log(error))
             .shareReplay(1)
 
         const tokenUpdatedTrigger = youtubeTokenObservable

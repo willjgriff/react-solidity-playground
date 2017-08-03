@@ -32,7 +32,7 @@ class YoutubeTokenBridge {
             .flatMap(youtubeToken => youtubeToken.getOraclizeFee())
             .map(oraclizeFeeBigNumber => oraclizeFeeBigNumber.toNumber())
             .map(oraclizeFeeInWei => this.web3.fromWei(oraclizeFeeInWei, 'ether'))
-            .do(oraclizeFeeInEther => console.log(oraclizeFeeInEther))
+            // .do(oraclizeFeeInEther => console.log("Oraclize fee in Ether: " + oraclizeFeeInEther))
     }
 
     getBalanceOf(account) {
@@ -45,14 +45,14 @@ class YoutubeTokenBridge {
                 account: account,
                 balance: balanceBigNumber.toNumber()
             }})
-            .do(balance => console.log("Account: " + account + " Balance: " + balance))
+            // .do(balance => console.log("Account: " + balance.account + " Balance: " + balance.balance))
     }
 
     getTotalYoutubeTokens() {
         return this.youtubeToken
             .flatMap(youtubeToken => youtubeToken.totalSupply())
             .map(totalSupplyBigNumber => totalSupplyBigNumber.toNumber())
-            .do(totalSupply => console.log("Total Supply: " + totalSupply))
+            // .do(totalSupply => console.log("Total Supply: " + totalSupply))
     }
 
     addUserSubscriptionCount(user) {
@@ -67,18 +67,23 @@ class YoutubeTokenBridge {
                 gas: 1000000
             }))
             .map(tx => tx.tx)
-            .do(txHash => console.log("Submitted user registration tx: " + txHash))
+            // .do(txHash => console.log("Submitted user registration tx: " + txHash))
     }
 
     debugOraclizeQuery() {
         return this.youtubeToken
             .flatMap(youtubeToken => this.observableFromEvent(youtubeToken.DebugOraclizeQuery()))
-            .do(debugResponse => console.log("Debug event query: " + debugResponse.args.query))
+            // .do(debugResponse => console.log("Debug event query: " + debugResponse.args.query))
     }
 
     logSubscriptionCountUpdated() {
+        // Skipping logs in the current block is acceptable because any tx's submitted for which
+        // we are waiting for a response can only happen in a block later than the current one.
+        const currentBlockNumber = this.web3.eth.blockNumber
         return this.youtubeToken
             .flatMap(youtubeToken => this.observableFromEvent(youtubeToken.LogBalanceUpdatedWithSubscriptionCount()))
+            .filter(subscriptionUpdateResponse => subscriptionUpdateResponse.blockNumber !== currentBlockNumber)
+            // .do(subscriptionUpdateResponse => console.log("Susbcription count updated, skipped current block"))
     }
 
     observableFromEvent(contractEvent) {

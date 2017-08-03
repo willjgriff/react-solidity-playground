@@ -27,7 +27,7 @@ contract YoutubeToken is usingOraclize, StandardToken {
 
 	function YoutubeToken() {
 		// TODO: Delete this, for testing with private chain (testrpc) only
-		OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+		OAR = OraclizeAddrResolverI(0xB323b446A335c431624513F2e05C6eb7269e366D);
 		oraclize_setCustomGasPrice(21000000000 wei);
 		queryUpdater = msg.sender;
 

@@ -2,38 +2,69 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
+import './RegisterUserInput.css'
+
 const RegisterUserInput = (props) => {
     return (
-        <form>
-            <p>Register users subscription count to current Ether address:</p>
-            <input placeholder="Youtube username" type="text" onChange={props.setYoutubeUser}/>
-            <button onClick={props.registerUser}>Register subscription count</button>
-        </form>
+        <div className="register-container">
+
+            <form>
+                <p>Register users subscription count to current Ether address:</p>
+                <div className="register-input-container">
+                    <input placeholder="Youtube username" type="text" onChange={props.setYoutubeUser}/>
+                    <button className="register-input-button" onClick={props.registerUser}>Register subscription count</button>
+                </div>
+
+                {props.isLoading ?
+                <div className="loader"/>
+                : null}
+            </form>
+
+        </div>
     )
 }
 
 RegisterUserInput.propTypes = {
     setYoutubeUser: PropTypes.func,
-    registerUser: PropTypes.func
+    registerUser: PropTypes.func,
+    isLoading: PropTypes.bool
 }
 
 RegisterUserInput.defaultProps = {
     setYoutubeUser: () => {},
-    registerUser: () => {}
+    registerUser: () => {},
+    isLoading: false
 }
 
 export default class RegisterUserInputContainer extends Component {
 
-    state = { inputYoutubeUser: "" }
+    state = {
+        inputYoutubeUser: "",
+        isLoading: false
+     }
 
     static propTypes = {
-        youtubeTokenObservable: PropTypes.instanceOf(Rx.Observable)
+        youtubeTokenObservable: PropTypes.instanceOf(Rx.Observable),
     }
 
     registerUser = () => {
+        this.setState({ isLoading: true })
+
         this.props.youtubeTokenObservable
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.addUserSubscriptionCount(this.state.inputYoutubeUser))
-            .subscribe()
+            .subscribe(null, error => {
+                this.setState({ isLoading: false});
+                console.log(error)
+            })
+
+        this.props.youtubeTokenObservable
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.logSubscriptionCountUpdated())
+            .subscribe(() => this.setState({ isLoading: false}),
+                error => {
+                    console.log(error)
+                    this.setState({ isLoading: false })
+                }
+            )
     }
 
     setYoutubeUser = (event) => {
@@ -41,6 +72,12 @@ export default class RegisterUserInputContainer extends Component {
     }
 
     render() {
-        return <RegisterUserInput setYoutubeUser={this.setYoutubeUser} registerUser={this.registerUser} />
+        return (
+            <RegisterUserInput
+                setYoutubeUser={this.setYoutubeUser}
+                registerUser={this.registerUser}
+                isLoading={this.state.isLoading}
+            />
+        )
     }
 }
