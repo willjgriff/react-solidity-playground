@@ -1,9 +1,10 @@
-import YoutubeToken from '../build/contracts/YoutubeToken.json'
 import Rx from 'rxjs/Rx'
 import BigNumber from 'bignumber.js'
+import YoutubeToken from '../build/contracts/YoutubeToken.json'
+import Web3Bridge from './utils/Web3Bridge.js'
 
 // TODO: Get rid of all the 'do' logging statements
-class YoutubeTokenBridge {
+export default class YoutubeTokenBridge {
 
     constructor(web3) {
         const contract = require('truffle-contract')
@@ -11,31 +12,26 @@ class YoutubeTokenBridge {
         youtubeTokenContract.setProvider(web3.currentProvider)
 
         this.web3 = web3
+        this.web3Bridge = new Web3Bridge(web3)
         this.youtubeToken = Rx.Observable
             .fromPromise(youtubeTokenContract.deployed())
             .shareReplay(1)
-    }
-
-    // These two functions don't really belong here. They should be extracted into a separate Web3Utils or similar
-    getAccounts() {
-        return Rx.Observable
-            .from(this.web3.eth.accounts)
-            .do(account => console.log(account))
-    }
-
-    getCoinbase() {
-        return this.web3.eth.coinbase
     }
 
     getOraclizeCost() {
         return this.youtubeToken
             .flatMap(youtubeToken => youtubeToken.getOraclizeFee())
             .map(oraclizeFeeBigNumber => oraclizeFeeBigNumber.toNumber())
-            .map(oraclizeFeeInWei => this.web3.fromWei(oraclizeFeeInWei, 'ether'))
-            // .do(oraclizeFeeInEther => console.log("Oraclize fee in Ether: " + oraclizeFeeInEther))
+            .do(oraclizeFeeInEther => console.log("Oraclize fee in Wei: " + oraclizeFeeInEther))
     }
 
-    getBalanceOf(account) {
+    getOraclizeCostInEther() {
+        return this.getOraclizeCost()
+            .map(oraclizeFeeInWei => this.web3.fromWei(oraclizeFeeInWei, 'ether'))
+    }
+
+    getBalanceOfCoinbase() {
+        const account = this.web3Bridge.getCoinbase()
         return this.youtubeToken
             .flatMap(youtubeToken => Rx.Observable.zip(youtubeToken.balanceOf(account), youtubeToken.decimals(),
                 (balance, tokenDecimals) => { return { balance: balance, tokenDecimals: tokenDecimals } }))
@@ -45,58 +41,47 @@ class YoutubeTokenBridge {
                 account: account,
                 balance: balanceBigNumber.toNumber()
             }})
-            // .do(balance => console.log("Account: " + balance.account + " Balance: " + balance.balance))
+            .do(balance => console.log("Account: " + balance.account + " Balance: " + balance.balance))
     }
 
     getTotalYoutubeTokens() {
         return this.youtubeToken
             .flatMap(youtubeToken => youtubeToken.totalSupply())
             .map(totalSupplyBigNumber => totalSupplyBigNumber.toNumber())
-            // .do(totalSupply => console.log("Total Supply: " + totalSupply))
+            .do(totalSupply => console.log("Total Supply: " + totalSupply))
     }
 
     addUserSubscriptionCount(user) {
         return this.youtubeToken
             .zip(this.getOraclizeCost(), (youtubeToken, oraclizeCost) => { return { youtubeToken: youtubeToken, oraclizeCost: oraclizeCost } })
-            .flatMap(zipResult => zipResult.youtubeToken.registerUser(user, this.getCoinbase(), {
-                from: this.getCoinbase(),
-                // value: zipResult.oraclizeCost,
-                // TODO: The extra gas here is for the Oraclize callback cost, it should be dynamic and determined by the contract.
-                value: (600000 * 21000000000),
-                // value: zipResult.oraclizeCost + (400000 * 21000000000),
-                gas: 1000000
+            .flatMap(zipResult => zipResult.youtubeToken.registerUser(user, this.web3Bridge.getCoinbase(), {
+                from: this.web3Bridge.getCoinbase(),
+                // TODO: The extra gas here is for the Oraclize callback cost, the gas price should be dynamic and determined by the contract.
+                value: zipResult.oraclizeCost + (400000 * 21000000000),
+                // Esitimated with youtubeToken.registerUser.estimateGas("wood", web3.eth.accounts[0], {from:web3.eth.accounts[0]}) = 320000
+                gas: 400000
             }))
             .map(tx => tx.tx)
-            // .do(txHash => console.log("Submitted user registration tx: " + txHash))
+            .do(txHash => console.log("Submitted user registration tx: " + txHash))
     }
 
     debugOraclizeQuery() {
         return this.youtubeToken
-            .flatMap(youtubeToken => this.observableFromEvent(youtubeToken.DebugOraclizeQuery()))
-            // .do(debugResponse => console.log("Debug event query: " + debugResponse.args.query))
+            .flatMap(youtubeToken => this.web3Bridge.observableFromEvent(youtubeToken.DebugOraclizeQuery()))
+            .do(debugResponse => console.log("Debug event query: " + debugResponse.args.query))
     }
 
-    logSubscriptionCountUpdated() {
+    LogFutureSubscriptionCountUpdated() {
         // Skipping logs in the current block is acceptable because any tx's submitted for which
         // we are waiting for a response can only happen in a block later than the current one.
-        const currentBlockNumber = this.web3.eth.blockNumber
-        return this.youtubeToken
-            .flatMap(youtubeToken => this.observableFromEvent(youtubeToken.LogBalanceUpdatedWithSubscriptionCount()))
-            .filter(subscriptionUpdateResponse => subscriptionUpdateResponse.blockNumber !== currentBlockNumber)
-            // .do(subscriptionUpdateResponse => console.log("Susbcription count updated, skipped current block"))
+        return this.web3Bridge.getCurrentBlockNumber()
+            .concatMap(currentBlockNumber => this.youtubeToken
+                .flatMap(youtubeToken => this.logSubscriptionCountUpdated(youtubeToken))
+                .filter(subscriptionUpdateResponse => subscriptionUpdateResponse.blockNumber !== currentBlockNumber))
+            .do(subscriptionUpdateResponse => console.log("Susbcription count updated, skipped current block"))
     }
 
-    observableFromEvent(contractEvent) {
-        return Rx.Observable.create(observer => {
-            contractEvent.watch((error, response) => {
-                if (!error) {
-                    observer.next(response)
-                } else {
-                    observer.error(error)
-                }
-            })
-        })
+    logSubscriptionCountUpdated(youtubeToken) {
+        return this.web3Bridge.observableFromEvent(youtubeToken.LogBalanceUpdatedWithSubscriptionCount())
     }
 }
-
-export default YoutubeTokenBridge

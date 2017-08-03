@@ -38,7 +38,7 @@ export default class OraclizeDetailsContainer extends Component {
             .subscribe(logResponse => this.setState({ oraclizeQuery: logResponse.args.query }), error => console.log(error))
 
         this.props.tokenUpdatedTrigger
-            .flatMap(youtubeTokenBridge => youtubeTokenBridge.getOraclizeCost())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.getOraclizeCostInEther())
             .subscribe(oraclizeFee => this.setState({ oraclizeFee }), error => console.log(error))
     }
 

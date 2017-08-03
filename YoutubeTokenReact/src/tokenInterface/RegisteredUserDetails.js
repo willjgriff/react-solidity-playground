@@ -34,7 +34,7 @@ export default class RegisteredUserDetailsContainer extends Component {
 
     componentWillMount() {
         this.props.youtubeTokenObservable
-            .flatMap(youtubeTokenBridge => youtubeTokenBridge.logSubscriptionCountUpdated())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.LogFutureSubscriptionCountUpdated())
             .subscribe(logResponse => {
                 this.setState({
                     updatedUser: logResponse.args.subscriber,

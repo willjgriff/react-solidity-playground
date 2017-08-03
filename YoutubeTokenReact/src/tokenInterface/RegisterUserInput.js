@@ -58,7 +58,7 @@ export default class RegisterUserInputContainer extends Component {
             })
 
         this.props.youtubeTokenObservable
-            .flatMap(youtubeTokenBridge => youtubeTokenBridge.logSubscriptionCountUpdated())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.LogFutureSubscriptionCountUpdated())
             .subscribe(() => this.setState({ isLoading: false}),
                 error => {
                     console.log(error)
