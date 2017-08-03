@@ -4,11 +4,11 @@ import Rx from 'rxjs/Rx'
 
 const RegisterUserInput = (props) => {
     return (
-        <label>
+        <form>
             <p>Register users subscription count to current Ether address:</p>
             <input placeholder="Youtube username" type="text" onChange={props.setYoutubeUser}/>
             <button onClick={props.registerUser}>Register subscription count</button>
-        </label>
+        </form>
     )
 }
 

@@ -31,7 +31,8 @@ class YoutubeTokenBridge {
         return this.youtubeToken
             .flatMap(youtubeToken => youtubeToken.getOraclizeFee())
             .map(oraclizeFeeBigNumber => oraclizeFeeBigNumber.toNumber())
-            .do(oraclizeFee => console.log(oraclizeFee))
+            .map(oraclizeFeeInWei => this.web3.fromWei(oraclizeFeeInWei, 'ether'))
+            .do(oraclizeFeeInEther => console.log(oraclizeFeeInEther))
     }
 
     getBalanceOf(account) {
@@ -61,7 +62,8 @@ class YoutubeTokenBridge {
                 from: this.getCoinbase(),
                 // value: zipResult.oraclizeCost,
                 // TODO: The extra gas here is for the Oraclize callback cost, it should be dynamic and determined by the contract.
-                value: zipResult.oraclizeCost + (400000 * 21000000000),
+                value: (600000 * 21000000000),
+                // value: zipResult.oraclizeCost + (400000 * 21000000000),
                 gas: 1000000
             }))
             .map(tx => tx.tx)

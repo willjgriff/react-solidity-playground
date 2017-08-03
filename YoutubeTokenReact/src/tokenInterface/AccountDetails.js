@@ -2,11 +2,30 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-export default class AccountDetails extends Component {
+const AccountDetails = (props) => {
+    return (
+        <div>
+            <p>&nbsp;&nbsp;&nbsp;Updated account: {props.accountUpdated}
+            <br/>&nbsp;&nbsp;&nbsp;Account balance: {props.accountBalance}</p>
+        </div>
+    )
+}
+
+AccountDetails.propTypes = {
+    accountUpdated: PropTypes.string,
+    accountBalance: PropTypes.number
+}
+
+AccountDetails.defaultProps = {
+    accountUpdated: "~~~",
+    accountBalance: 0
+}
+
+export default class AccountDetailsContainer extends Component {
 
     state = {
-        accountUpdated: "",
-        accountBalance: ""
+        accountUpdated: "~~~",
+        accountBalance: 0
     }
 
     static propTypes = {
@@ -21,10 +40,7 @@ export default class AccountDetails extends Component {
 
     render() {
         return (
-            <div>
-                <p>&nbsp;&nbsp;&nbsp;Updated account: {this.state.accountUpdated}
-                <br/>&nbsp;&nbsp;&nbsp;Account balance: {this.state.accountBalance}</p>
-            </div>
+            <AccountDetails accountUpdated={this.state.accountUpdated} accountBalance={this.state.accountBalance} />
         )
     }
 }

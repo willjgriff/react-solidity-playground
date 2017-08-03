@@ -617,10 +617,90 @@
         }
       },
       "links": {},
-      "address": "0xb29a9da282eb3ee92a0d9b4f0c2e5397858923d2",
-      "updated_at": 1501593032629
+      "address": "0xc72112ac2073d9eb182be411b0bd396904ba798b",
+      "updated_at": 1501757798343
+    },
+    "1501758033611": {
+      "events": {
+        "0xce4859252d64db67b5f70f70013f32b78efe8a33a4d2d3b0885332b40529456c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "subscriber",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "subscriptionCount",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogBalanceUpdatedWithSubscriptionCount",
+          "type": "event"
+        },
+        "0x42f43cff0841ff48bd3e8c333b94c370e9af5de7189674f73171147763b5b028": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "query",
+              "type": "string"
+            }
+          ],
+          "name": "DebugOraclizeQuery",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        },
+        "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xa11c3768a0fbefafb63394fcd29dc969ed6a0bf1",
+      "updated_at": 1501758555483
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1501593032629
+  "updated_at": 1501758555483
 }

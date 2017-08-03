@@ -25,7 +25,7 @@ export default class TotalTokensCountContainer extends Component {
     componentWillMount() {
         this.props.tokenUpdatedTrigger
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.getTotalYoutubeTokens())
-            .subscribe(totalTokens => this.setState({ totalTokens: totalTokens }))
+            .subscribe(totalTokens => this.setState({ totalTokens }))
     }
 
     render() {

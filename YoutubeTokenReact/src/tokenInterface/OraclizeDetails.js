@@ -2,11 +2,30 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-export default class OraclizeDetails extends Component {
+var OraclizeDetails = (props) => {
+    return (
+        <div>
+            <p>&nbsp;&nbsp;&nbsp;Oraclize query (from debug event): {props.oraclizeQuery}
+            <br/>&nbsp;&nbsp;&nbsp;Oraclize query cost (in Ether): {props.oraclizeFee}</p>
+        </div>
+    )
+}
+
+OraclizeDetails.propTypes = {
+    oraclizeQuery: PropTypes.string,
+    oraclizeFee: PropTypes.string
+}
+
+OraclizeDetails.defaultProps = {
+    oraclizeQuery: "~~~",
+    oraclizeFee: ""
+}
+
+export default class OraclizeDetailsContainer extends Component {
 
     state = {
-        oraclizeQuery: "",
-        oraclizeFee: 0
+        oraclizeQuery: "~~~",
+        oraclizeFee: ""
     }
 
     static propTypes = {
@@ -20,15 +39,10 @@ export default class OraclizeDetails extends Component {
 
         this.props.tokenUpdatedTrigger
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.getOraclizeCost())
-            .subscribe(oraclizeFee => this.setState({ oraclizeFee: oraclizeFee }))
+            .subscribe(oraclizeFee => this.setState({ oraclizeFee }))
     }
 
     render() {
-        return (
-            <div>
-                <p>&nbsp;&nbsp;&nbsp;Oraclize query: {this.state.oraclizeQuery}
-                <br/>&nbsp;&nbsp;&nbsp;Oraclize query cost: {this.state.oraclizeFee}</p>
-            </div>
-        )
+        return (<OraclizeDetails oraclizeQuery={this.state.oraclizeQuery} oraclizeFee={this.state.oraclizeFee} />)
     }
 }
