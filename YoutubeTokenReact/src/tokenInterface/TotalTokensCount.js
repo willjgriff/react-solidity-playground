@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-var TotalTokensCount = (props) => {
+const TotalTokensCount = (props) => {
     return (<p>Total Youtube Tokens: {props.totalTokens}</p>)
 }
 

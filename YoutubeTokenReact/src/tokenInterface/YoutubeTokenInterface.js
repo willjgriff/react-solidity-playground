@@ -49,7 +49,7 @@ export default class YoutubeTokenInterfaceContainer extends Component {
             .shareReplay(1)
 
         const tokenUpdatedTrigger = youtubeTokenObservable
-            .flatMap(youtubeTokenBridge => youtubeTokenBridge.LogFutureSubscriptionCountUpdated())
+            .flatMap(youtubeTokenBridge => youtubeTokenBridge.logFutureSubscriptionCountUpdated())
             // Start with an empty object to prompt loading of initial state before any contract updates have occured.
             .startWith({})
             .flatMap(trigger => youtubeTokenObservable)

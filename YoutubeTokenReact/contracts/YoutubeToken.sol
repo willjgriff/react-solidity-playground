@@ -22,12 +22,12 @@ contract YoutubeToken is usingOraclize, StandardToken {
 		address pubAddress;
 	}
 
-	event LogBalanceUpdatedWithSubscriptionCount(string subscriber, uint subscriptionCount);
-	event DebugOraclizeQuery(string query);
+	event LogRequestedSubscriptionCount(string subscriber, string query);
+	event LogSubscriptionCountAdded(string subscriber, uint subscriptionCount);
 
 	function YoutubeToken() {
 		// TODO: Delete this, for testing with private chain (testrpc) only
-		OAR = OraclizeAddrResolverI(0xB323b446A335c431624513F2e05C6eb7269e366D);
+//		OAR = OraclizeAddrResolverI(0xB323b446A335c431624513F2e05C6eb7269e366D);
 		oraclize_setCustomGasPrice(21000000000 wei);
 		queryUpdater = msg.sender;
 
@@ -61,7 +61,7 @@ contract YoutubeToken is usingOraclize, StandardToken {
 
 	function getOraclizeFee() public constant returns(uint) {
 		return oraclize_getPrice(ORACLIZE_DATA_SOURCE);
-		/*return oraclize_getPrice(ORACLIZE_DATA_SOURCE) * 2;*/
+//		return oraclize_getPrice(ORACLIZE_DATA_SOURCE) * 2;
 	}
 
 	// This requires an Oraclize request with a secure service that returns a verified address for a given Youtube username.
@@ -95,7 +95,7 @@ contract YoutubeToken is usingOraclize, StandardToken {
 		address usersAddress = parseAddr(response);
 		string memory username = queriedUsers[oraclizeId].username;
 		string memory fullQueryString = createOraclizeRequestString(username);
-		DebugOraclizeQuery(fullQueryString);
+		LogRequestedSubscriptionCount(username, fullQueryString);
 
 		bytes32 queryId = oraclize_query(ORACLIZE_DATA_SOURCE, fullQueryString, 400000);
 		queriedUsers[queryId] = QueriedUser(username, usersAddress);
@@ -112,7 +112,7 @@ contract YoutubeToken is usingOraclize, StandardToken {
 		registeredUsers[user.username] = true;
 		totalSubscriptionCount = totalSubscriptionCount.add(subscriptionCountInt);
 
-		LogBalanceUpdatedWithSubscriptionCount(user.username, subscriptionCountInt);
+		LogSubscriptionCountAdded(user.username, subscriptionCountInt);
 	}
 
 	function totalSupply() public constant returns(uint) {

@@ -1,6 +1,6 @@
 import Rx from 'rxjs/Rx'
 
-export default class Web3Bridge {
+export default class Web3Utils {
 
     constructor(web3) {
         this.web3 = web3
@@ -38,5 +38,11 @@ export default class Web3Bridge {
                 }
             })
         })
+    }
+
+    isEventLogInTransaction(event, tx) {
+        return tx.logs
+            .filter(log => log.event === event)
+            .length > 0
     }
 }

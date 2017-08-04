@@ -7,7 +7,7 @@
 
 var Web3 = require('web3')
 // Note we must change the web3 provider port when we change the testnet port.
-var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8546'))
 
 var acc = index => web3.eth.accounts[index]
 
