@@ -22,12 +22,13 @@ contract YoutubeToken is usingOraclize, StandardToken {
 		address pubAddress;
 	}
 
+    // Add indexed args here
 	event LogRequestedSubscriptionCount(string subscriber, string query);
 	event LogSubscriptionCountAdded(string subscriber, uint subscriptionCount);
 
 	function YoutubeToken() {
 		// TODO: Delete this, for testing with private chain (testrpc) only
-//		OAR = OraclizeAddrResolverI(0xB323b446A335c431624513F2e05C6eb7269e366D);
+		//OAR = OraclizeAddrResolverI(0xB323b446A335c431624513F2e05C6eb7269e366D);
 		oraclize_setCustomGasPrice(21000000000 wei);
 		queryUpdater = msg.sender;
 

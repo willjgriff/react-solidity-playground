@@ -13,7 +13,16 @@ export default class Web3Utils {
     }
 
     getCoinbase() {
-        return this.web3.eth.coinbase
+        return Rx.Observable
+            .create(observer => {
+                this.web3.eth.getCoinbase((error, response) => {
+                    if (!error) {
+                        observer.next(response)
+                    } else {
+                        observer.error(error)
+                    }
+                })
+            })
     }
 
     getCurrentBlockNumber() {

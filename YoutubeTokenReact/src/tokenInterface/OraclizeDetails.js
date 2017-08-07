@@ -5,7 +5,7 @@ import Rx from 'rxjs/Rx'
 const OraclizeDetails = (props) => {
     return (
         <div>
-            <p>&nbsp;&nbsp;&nbsp;Oraclize query (from debug event): {props.oraclizeQuery}
+            <p>&nbsp;&nbsp;&nbsp;Oraclize query (from requested registration event): {props.oraclizeQuery}
                 <br/>&nbsp;&nbsp;&nbsp;Oraclize query cost (in Ether): {props.oraclizeFee}</p>
         </div>
     )
