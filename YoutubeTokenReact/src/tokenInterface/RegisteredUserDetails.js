@@ -1,15 +1,14 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-var RegisteredUserDetails = (props) => {
-    return (
-        <div>
-            <p>&nbsp;&nbsp;&nbsp;User registered (from subscription count updated event): {props.updatedUser}
-            <br/>&nbsp;&nbsp;&nbsp;Subscription count (from subscription count updated event): {props.updatedSubscriptionCount}</p>
-        </div>
-    )
-}
+var RegisteredUserDetails = (props) => (
+    <div>
+        <p>&nbsp;&nbsp;&nbsp;User registered (from subscription count updated event): {props.updatedUser}
+            <br/>&nbsp;&nbsp;&nbsp;Subscription count (from subscription count updated
+            event): {props.updatedSubscriptionCount}</p>
+    </div>
+)
 
 RegisteredUserDetails.propTypes = {
     updatedUser: PropTypes.string,
@@ -45,8 +44,8 @@ export default class RegisteredUserDetailsContainer extends Component {
 
     render() {
         return (<RegisteredUserDetails
-                updatedUser={this.state.updatedUser}
-                updatedSubscriptionCount={this.state.updatedSubscriptionCount}
-            />)
+            updatedUser={this.state.updatedUser}
+            updatedSubscriptionCount={this.state.updatedSubscriptionCount}
+        />)
     }
 }

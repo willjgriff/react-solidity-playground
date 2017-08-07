@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
@@ -10,22 +10,21 @@ import RegisteredUserDetailsContainer from './RegisteredUserDetails.js'
 import AccountDetailsContainer from './AccountDetails.js'
 import TotalTokensCountContainer from './TotalTokensCount.js'
 
-var YoutubeTokenInterface = (props) => {
-    return (
-        <div>
-            <h1>Youtube Subscription Count Token</h1>
-            <h3>Open console to see feedback of request</h3>
+var YoutubeTokenInterface = (props) => (
+    <div>
+        <h1>Youtube Subscription Count Token</h1>
+        <h3>Open console to see feedback of request</h3>
 
-            <RegisterUserInputContainer youtubeTokenObservable={props.youtubeTokenObservable}/>
+        <RegisterUserInputContainer youtubeTokenObservable={props.youtubeTokenObservable}/>
 
-            <OraclizeDetailsContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger} />
-            <RegisteredUserDetailsContainer youtubeTokenObservable={props.youtubeTokenObservable}/>
-            <AccountDetailsContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger} />
+        <OraclizeDetailsContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger}/>
+        <RegisteredUserDetailsContainer youtubeTokenObservable={props.youtubeTokenObservable}/>
+        <AccountDetailsContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger}/>
 
-            <TotalTokensCountContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger} />
-        </div>
-    )
-}
+        <TotalTokensCountContainer tokenUpdatedTrigger={props.tokenUpdatedTrigger}/>
+    </div>
+)
+
 
 YoutubeTokenInterface.propTypes = {
     youtubeTokenObservable: PropTypes.instanceOf(Rx.Observable),
@@ -33,7 +32,8 @@ YoutubeTokenInterface.propTypes = {
 }
 
 YoutubeTokenInterface.defaultProps = {
-    updateState: () => {}
+    updateState: () => {
+    }
 }
 
 export default class YoutubeTokenInterfaceContainer extends Component {

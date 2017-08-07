@@ -2,14 +2,13 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-const OraclizeDetails = (props) => {
-    return (
-        <div>
-            <p>&nbsp;&nbsp;&nbsp;Oraclize query (from requested registration event): {props.oraclizeQuery}
-                <br/>&nbsp;&nbsp;&nbsp;Oraclize query cost (in Ether): {props.oraclizeFee}</p>
-        </div>
-    )
-}
+const OraclizeDetails = (props) => (
+    <div>
+        <p>&nbsp;&nbsp;&nbsp;Oraclize query (from requested registration event): {props.oraclizeQuery}
+            <br/>&nbsp;&nbsp;&nbsp;Oraclize query cost (in Ether): {props.oraclizeFee}</p>
+    </div>
+)
+
 
 OraclizeDetails.propTypes = {
     oraclizeQuery: PropTypes.string,

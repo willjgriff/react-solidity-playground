@@ -1,15 +1,13 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs/Rx'
 
-const AccountDetails = (props) => {
-    return (
-        <div>
-            <p>&nbsp;&nbsp;&nbsp;Updated account: {props.accountUpdated}
+const AccountDetails = (props) => (
+    <div>
+        <p>&nbsp;&nbsp;&nbsp;Updated account: {props.accountUpdated}
             <br/>&nbsp;&nbsp;&nbsp;Account balance: {props.accountBalance}</p>
-        </div>
-    )
-}
+    </div>
+)
 
 AccountDetails.propTypes = {
     accountUpdated: PropTypes.string,
@@ -35,13 +33,13 @@ export default class AccountDetailsContainer extends Component {
     componentWillMount() {
         this.props.tokenUpdatedTrigger
             .flatMap(youtubeTokenBridge => youtubeTokenBridge.getBalanceOfCoinbase())
-            .subscribe(balance => this.setState({ accountUpdated: balance.account, accountBalance: balance.balance }),
+            .subscribe(balance => this.setState({accountUpdated: balance.account, accountBalance: balance.balance}),
                 error => console.log(error))
     }
 
     render() {
         return (
-            <AccountDetails accountUpdated={this.state.accountUpdated} accountBalance={this.state.accountBalance} />
+            <AccountDetails accountUpdated={this.state.accountUpdated} accountBalance={this.state.accountBalance}/>
         )
     }
 }
