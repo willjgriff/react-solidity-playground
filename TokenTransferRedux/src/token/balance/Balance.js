@@ -1,11 +1,18 @@
 import React from 'react'
 import './Balance.css'
+import {connect} from "react-redux"
 
-const Balance = () => (
+const Balance = ({balance}) => (
     <div className="balance">
         Address: 938492384f29485j <br/>
-        Balance: 0
+        Balance: {balance}
     </div>
 )
 
-export default Balance
+const mapStateToProps = (state) => ({
+    balance: state.balance
+})
+
+const BalanceContainer = connect(mapStateToProps)(Balance)
+
+export default BalanceContainer
