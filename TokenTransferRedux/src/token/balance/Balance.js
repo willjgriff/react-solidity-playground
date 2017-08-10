@@ -13,8 +13,8 @@ const Balance = ({account, balance}) => (
 )
 
 const mapStateToProps = (state) => ({
-    account: state.account,
-    balance: state.balance
+    account: state.accountBalance.account,
+    balance: state.accountBalance.balance
 })
 
 const BalanceContainer = connect(mapStateToProps)(Balance)
