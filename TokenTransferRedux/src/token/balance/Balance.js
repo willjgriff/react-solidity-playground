@@ -2,14 +2,18 @@ import React from 'react'
 import './Balance.css'
 import {connect} from "react-redux"
 
-const Balance = ({balance}) => (
+const Balance = ({account, balance}) => (
     <div className="balance">
-        Address: 938492384f29485j <br/>
+
+        Address: {account}
+        <br/>
         Balance: {balance}
+
     </div>
 )
 
 const mapStateToProps = (state) => ({
+    account: state.account,
     balance: state.balance
 })
 

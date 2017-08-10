@@ -1,7 +1,7 @@
 import React from 'react'
 import './Transfer.css'
 import {connect} from "react-redux"
-import {setBalance} from "../balance/Actions"
+import {setBalance} from "../balance/BalanceActions"
 
 const Transfer = ({onSubmitClicked}) => (
     <div>
@@ -20,8 +20,8 @@ const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
     onSubmitClicked: (event) => {
         event.preventDefault()
-        // dispatch(setBalance(event.target.querySelector('input').value))
-        dispatch(setBalance(event.target.newBalance.value))
+        // dispatch(setBalance(event.target.querySelector('input').balance))
+        dispatch(setBalance("ACCOUNT", event.target.newBalance.value))
     }
 })
 

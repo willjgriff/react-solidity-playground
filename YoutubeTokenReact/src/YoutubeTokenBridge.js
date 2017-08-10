@@ -1,7 +1,7 @@
 import Rx from 'rxjs/Rx'
 import BigNumber from 'bignumber.js'
 import YoutubeToken from '../build/contracts/YoutubeToken.json'
-import Web3Bridge from './utils/Web3Utils.js'
+import Web3Utils from './utils/Web3Utils.js'
 
 const LogSubscriptionCountEvent = "LogRequestedSubscriptionCount"
 
@@ -14,7 +14,7 @@ export default class YoutubeTokenBridge {
         youtubeTokenContract.setProvider(web3.currentProvider)
 
         this.web3 = web3
-        this.web3Utils = new Web3Bridge(web3)
+        this.web3Utils = new Web3Utils(web3)
         this.youtubeToken = Rx.Observable
             .fromPromise(youtubeTokenContract.deployed())
             .shareReplay(1)
