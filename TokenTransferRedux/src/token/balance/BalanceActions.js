@@ -5,7 +5,6 @@ export const setBalance = (account, balance) => ({
     balance
 })
 
-export const showBalance = (account) => ({
-    type: "UPDATE_BALANCE",
-    account
+export const showBalance = () => ({
+    type: "UPDATE_BALANCE"
 })

@@ -13,15 +13,21 @@ export const accountBalance = (state = initialState, action) => {
     }
 }
 
-export const updateCoinbaseBalanceEpic = (action$, store, {tokenBridge$, web3Bridge$}) => {
+export const updateBalanceEpic = (action$, store, {tokenBridge$, web3Bridge$}) => {
 
-    let balanceOf$ = coinbase => tokenBridge$
-        .flatMap(tokenBridge => tokenBridge.balanceOf(coinbase))
-        .map(balance => ({coinbase, balance}))
+    // let balanceOf$ = coinbase => tokenBridge$
+    //     .flatMap(tokenBridge => tokenBridge.balanceOf(coinbase))
+    //     .map(balance => ({coinbase, balance}))
+    //
+    // return action$.ofType("UPDATE_BALANCE")
+    //     .flatMap(action => web3Bridge$)
+    //     .flatMap(web3Bridge => web3Bridge.getCoinbase())
+    //     .flatMap(coinbase => balanceOf$(coinbase))
+    //     .map(({coinbase, balance}) => setBalance(coinbase, balance))
 
-    action$.ofType("UPDATE_BALANCE")
-        .flatMap(action => web3Bridge$)
-        .flatMap(web3Bridge => web3Bridge.getCoinbase())
-        .flatMap(coinbase => balanceOf$(coinbase))
-        .map(({coinbase, balance}) => setBalance(coinbase, balance))
+    return action$.ofType("UPDATE_BALANCE")
+        // .flatMap(() => web3Bridge$)
+    //     .flatMap(web3Bridge => web3Bridge.getCoinbase())
+        // .flatMap(coinbase => balanceOf$(coinbase))
+        .map(() => setBalance("asfda", 23))
 }
