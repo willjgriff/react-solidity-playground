@@ -1,21 +1,23 @@
 import React from 'react'
+import Token from "./Token"
+
+import '../css/oswald.css'
+import '../css/open-sans.css'
+import '../css/pure-min.css'
 import './Home.css'
-import Transfer from "../token/transfer/Transfer"
-import Balance from "../token/balance/Balance"
-import {Provider} from "react-redux"
-import store from "../redux/store"
-import {showBalance} from "../token/balance/BalanceActions"
-
-// TODO: Move initial fetches somewhere more suitable.
-
-store.dispatch(showBalance())
 
 export default () => (
-    <Provider store={store}>
-        <div className="home">
-            Transfer coins to another account
-            <Balance/>
-            <Transfer/>
-        </div>
-    </Provider>
+    <div className="App">
+        <nav className="navbar pure-menu pure-menu-horizontal">
+            <a href="#" className="pure-menu-heading pure-menu-link">Token Transfer Redux Playground</a>
+        </nav>
+
+        <main className="container">
+            <div className="pure-g">
+                <div className="pure-u-1-1">
+                    <Token/>
+                </div>
+            </div>
+        </main>
+    </div>
 )

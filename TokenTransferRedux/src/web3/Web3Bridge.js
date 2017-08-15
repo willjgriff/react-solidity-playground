@@ -18,6 +18,12 @@ export default class Web3Bridge {
         })
     }
 
+    observableFromEvent(contractEvent) {
+        return Rx.Observable.create(observer => {
+            contractEvent.watch((error, response) => this.web3ObservableFunction(observer, error, response))
+        })
+    }
+
     web3ObservableFunction = (observer, error, response) => {
         if (!error) {
             observer.next(response)
@@ -26,4 +32,9 @@ export default class Web3Bridge {
         }
     }
 
+    isEventLogInTransaction(event, tx) {
+        return tx.logs
+            .filter(log => log.event === event)
+            .length > 0
+    }
 }

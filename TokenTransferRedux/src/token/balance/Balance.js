@@ -5,6 +5,7 @@ import {connect} from "react-redux"
 const Balance = ({account, balance}) => (
     <div className="balance">
 
+        <p>Balance of current account</p>
         Address: {account}
         <br/>
         Balance: {balance}
