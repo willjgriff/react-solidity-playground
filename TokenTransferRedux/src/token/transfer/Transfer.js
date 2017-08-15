@@ -6,8 +6,9 @@ import {transferFunds} from "./TransferActions"
 const Transfer = ({onSubmitClicked, isLoading}) => (
     <div>
         <form onSubmit={event => onSubmitClicked(event)}>
-            <p>Transfer to another account</p>
-            <input type="string" id="address" placeholder="Address"/>
+            Transfer to another account
+            <br/>
+            <input type="string" id="address" placeholder="Address" className="transfer-address"/>
             <br/>
             <input type="number" id="value" placeholder="Value"/>
             <br/>
