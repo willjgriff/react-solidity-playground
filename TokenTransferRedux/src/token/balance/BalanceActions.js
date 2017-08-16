@@ -3,14 +3,14 @@ export const UPDATE_BALANCE = "UPDATE_BALANCE"
 export const SET_AVAILABLE_ACCOUNTS = "SET_AVAILABLE_ACCOUNTS"
 export const UPDATE_AVAILABLE_ACCOUNTS = "UPDATE_AVAILABLE_ACCOUNTS"
 
-export const setBalance = (account, balance) => ({
+export const setBalance = balance => ({
     type: SET_BALANCE,
-    account,
     balance
 })
 
-export const updateBalance = () => ({
-    type: UPDATE_BALANCE
+export const updateBalance = account => ({
+    type: UPDATE_BALANCE,
+    account
 })
 
 export const setAvailableAccounts = (accounts) => ({

@@ -2,11 +2,18 @@ import React from 'react'
 import Home from "./layout/Home.js"
 import store from "./redux/store"
 import {Provider} from "react-redux"
-import {updateAvailableAccounts, updateBalance} from "./token/balance/BalanceActions"
+import {updateAvailableAccounts} from "./token/balance/BalanceActions"
+import getWeb3 from "./web3/getWeb3"
 
-// TODO: Where's the best place to put these?
-store.dispatch(updateBalance())
-store.dispatch(updateAvailableAccounts())
+// Initialize web3 and set in Redux.
+getWeb3
+    .then(results => {
+        console.log('Web3 initialized!')
+        store.dispatch(updateAvailableAccounts())
+    })
+    .catch(() => {
+        console.log('Error in web3 initialization.')
+    })
 
 const App = () => (
     <Provider store={store}>

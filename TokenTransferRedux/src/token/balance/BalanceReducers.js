@@ -1,23 +1,23 @@
 import {
     SET_AVAILABLE_ACCOUNTS, SET_BALANCE, setAvailableAccounts, setBalance, UPDATE_AVAILABLE_ACCOUNTS,
-    UPDATE_BALANCE
+    UPDATE_BALANCE, updateBalance
 } from "./BalanceActions"
-import {TRANSFER_FUNDS} from "../transfer/TransferActions"
+import * as Rx from "rxjs"
 
-// TODO: Reducers and epics should probably be split up, for now this is easier to read though.
+// TODO: Reducers and epics should probably be split up, for now though this is easier to read.
 const accountInitialState = {
     account: "",
     balance: 0,
-    loading: true
 }
 
 export const accountBalance = (state = accountInitialState, action) => {
-    if (action.type === SET_BALANCE) {
-        return {...state, account: action.account, balance: action.balance, loading: false}
-    } else if (action.type === TRANSFER_FUNDS) {
-        return {...state, loading: true}
-    } else {
-        return state
+    switch (action.type) {
+        case SET_BALANCE:
+            return {...state, balance: action.balance}
+        case UPDATE_BALANCE:
+            return {...state, account: action.account}
+        default:
+            return state
     }
 }
 
@@ -29,25 +29,21 @@ export const availableAccounts = (state = [], action) => {
     }
 }
 
-export const availableAccountsEpic = (action$, store, {web3Bridge$}) => {
-    const accounts$ = web3Bridge$
-        .flatMap(web3Bridge => web3Bridge.getAccounts())
+export const availableAccountsEpic = (action$, store) => {
+    const updateBalanceAndSetAccounts$ = accounts =>
+        Rx.Observable.of(updateBalance(accounts[0]), setAvailableAccounts(accounts))
+
+    const accounts$ = () => store.getState().dependencies.web3Bridge.getAccounts()
 
     return action$.ofType(UPDATE_AVAILABLE_ACCOUNTS)
-        .flatMap(action => accounts$)
-        .map(accounts => setAvailableAccounts(accounts))
+        .flatMap(action => accounts$())
+        .flatMap(accounts => updateBalanceAndSetAccounts$(accounts))
 }
 
-export const updateBalanceEpic = (action$, store, {tokenBridge$, web3Bridge$}) => {
-    const balanceOf$ = coinbase => tokenBridge$
-        .flatMap(tokenBridge => tokenBridge.balanceOf(coinbase))
-        .map(balance => ({coinbase, balance}))
-
-    const coinbase$ = web3Bridge$
-        .flatMap(web3Bridge => web3Bridge.getCoinbase())
+export const updateBalanceEpic = (action$, store) => {
+    const balanceOf$ = account => store.getState().dependencies.tokenBridge.balanceOf(account)
 
     return action$.ofType(UPDATE_BALANCE)
-        .flatMap(action => coinbase$)
-        .flatMap(coinbase => balanceOf$(coinbase))
-        .map(({coinbase, balance}) => setBalance(coinbase, balance))
+        .flatMap(action => balanceOf$(action.account))
+        .map(balance => setBalance(balance))
 }

@@ -22,7 +22,7 @@ const Transfer = ({onSubmitClicked, isLoading}) => (
 )
 
 const mapStateToProps = state => ({
-    isLoading: state.accountBalance.loading
+    isLoading: state.transfer.loading
 })
 
 const mapDispatchToProps = dispatch => ({

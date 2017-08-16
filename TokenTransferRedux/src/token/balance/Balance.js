@@ -1,23 +1,24 @@
 import React from 'react'
 import './Balance.css'
 import {connect} from "react-redux"
+import {updateBalance} from "./BalanceActions"
 
-const Balance = ({account, accounts, balance}) => {
+const Balance = ({accounts, balance, onAccountSelected}) => {
 
     const accountOptions = accounts.map(account =>
-        <option>{account}</option>
+        <option key={account} value={account}>{account}</option>
     )
 
     return (
         <div className="balance">
             Balance of account
             <br/>
-            Address:
-            <select>
+
+            Address:{' '}
+            <select onChange={event => onAccountSelected(event)}>
                 {accountOptions}
             </select>
-            <br/>
-            Address: {account}
+
             <br/>
             Balance: {balance}
         </div>
@@ -25,13 +26,15 @@ const Balance = ({account, accounts, balance}) => {
 }
 
 const mapStateToProps = state => ({
-    account: state.accountBalance.account,
+    account: state.selectedAccount.account,
     accounts: state.availableAccounts,
-    balance: state.accountBalance.balance
+    balance: state.selectedAccount.balance
 })
 
 const mapDispatchToProps = dispatch => ({
-    onAccountSelected: dispatch(/** something */)
+    onAccountSelected: event => {
+        dispatch(updateBalance(event.target.value))
+    }
 })
 
 const BalanceContainer = connect(mapStateToProps, mapDispatchToProps)(Balance)

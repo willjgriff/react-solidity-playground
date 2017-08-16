@@ -22,15 +22,14 @@ export default class TokenBridge {
             .map(balanceBigNumber => balanceBigNumber.toNumber())
     }
 
-    transfer(account, value) {
-        return this.web3Bridge.getCoinbase()
-            .zip(this.token$, (coinbase, token) => ({coinbase, token}))
-            .flatMap(({coinbase, token}) => token.transfer(account, value, {from: coinbase}))
+    transfer(fromAccount, toAccount, value) {
+        return this.token$
+            .flatMap(token => token.transfer(toAccount, value, {from: fromAccount}))
     }
 
     logTransfer(fromAccount) {
         return this.token$
-            .flatMap(token => this.web3Bridge.observableFromEvent(token.Transfer()))
+            .flatMap(token => this.web3Bridge.observableFromEvent(token.Transfer({from: fromAccount})))
             .map(event => ({from: event.args.from, to: event.args.to, value: event.args.value}))
     }
 
