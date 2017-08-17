@@ -6,7 +6,7 @@ const transferInitialState = {
     loading: false
 }
 
-export const transferState = (state = transferInitialState, action) => {
+export const transferReducer = (state = transferInitialState, action) => {
     if (action.type === TRANSFER_FUNDS) {
         return {...state, loading: true}
     } else if (action.type === TRANSFER_FAILED || action.type === UPDATE_BALANCE) {
@@ -16,24 +16,25 @@ export const transferState = (state = transferInitialState, action) => {
     }
 }
 
-const getCurrentAccount = store => store.getState().selectedAccount.account
+const currentAccount = store => store.getState().selectedAccount.account
+const tokenBridge = store => store.getState().dependencies.tokenBridge
+const web3Bridge = store => store.getState().dependencies.web3Bridge
 
 export const transferEpic = (action$, store) => {
-
     const transfer$ = (toAccount, value) =>
-        store.getState().dependencies.tokenBridge.transfer(getCurrentAccount(store), toAccount, value)
+        tokenBridge(store).transfer(currentAccount(store), toAccount, value)
 
     const logTransfer$ = () =>
-        store.getState().dependencies.tokenBridge.logTransfer(getCurrentAccount(store))
+        tokenBridge(store).logTransfer(currentAccount(store))
 
     const transferEventNotInTx$ = (tx) => Rx.Observable.of(tx)
-        .filter(tx => !store.getState().dependencies.web3Bridge.isEventLogInTransaction("Transfer", tx))
+        .filter(tx => !web3Bridge(store).isEventLogInTransaction("Transfer", tx))
         .map(tx => transferFailed())
 
     return action$.ofType(TRANSFER_FUNDS)
-        .flatMap(action => transfer$(action.toAccount, action.value))
-        .flatMap(tx => logTransfer$()
-            .map(transfer => updateBalance(getCurrentAccount(store)))
-            .merge(transferEventNotInTx$(tx)))
-        .catch(error => Rx.Observable.of(transferFailed()))
+        .flatMap(action => transfer$(action.toAccount, action.value)
+            .flatMap(tx => logTransfer$()
+                .map(transfer => updateBalance(currentAccount(store)))
+                .merge(transferEventNotInTx$(tx)))
+            .catch(error => Rx.Observable.of(transferFailed())))
 }

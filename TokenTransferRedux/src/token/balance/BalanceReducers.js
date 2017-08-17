@@ -10,7 +10,7 @@ const accountInitialState = {
     balance: 0,
 }
 
-export const accountBalance = (state = accountInitialState, action) => {
+export const accountBalanceReducer = (state = accountInitialState, action) => {
     switch (action.type) {
         case SET_BALANCE:
             return {...state, balance: action.balance}
@@ -21,7 +21,7 @@ export const accountBalance = (state = accountInitialState, action) => {
     }
 }
 
-export const availableAccounts = (state = [], action) => {
+export const availableAccountsReducer = (state = [], action) => {
     if (action.type === SET_AVAILABLE_ACCOUNTS) {
         return action.accounts
     } else {

@@ -16,7 +16,7 @@ let getWeb3 = new Promise(function (resolve, reject) {
             resolve(store.dispatch(initDependencies(web3)))
         } else {
             // Fallback to localhost if no web3 injection.
-            const provider = new Web3.providers.HttpProvider('http://localhost:8544')
+            const provider = new Web3.providers.HttpProvider('http://localhost:8546')
             web3 = new Web3(provider)
             console.log('No web3 instance injected, using Local web3.')
             resolve(store.dispatch(initDependencies(web3)))

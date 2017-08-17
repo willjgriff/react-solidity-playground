@@ -1,21 +1,21 @@
 import {
-    accountBalance, availableAccounts, availableAccountsEpic,
+    accountBalanceReducer, availableAccountsReducer, availableAccountsEpic,
     updateBalanceEpic
 } from "../token/balance/BalanceReducers"
 import {combineEpics} from 'redux-observable'
-import {transferEpic, transferState} from "../token/transfer/TransferReducers"
+import {transferEpic, transferReducer} from "../token/transfer/TransferReducers"
 import {combineReducers} from "redux"
 import {dependencyReducer} from "../web3/DependencyReducers"
 
 export const rootReducer = combineReducers({
     dependencies: dependencyReducer,
-    selectedAccount: accountBalance,
-    availableAccounts,
-    transfer: transferState
+    selectedAccount: accountBalanceReducer,
+    availableAccounts: availableAccountsReducer,
+    transfer: transferReducer
 })
 
 export const rootEpic = combineEpics(
-    updateBalanceEpic,
     availableAccountsEpic,
+    updateBalanceEpic,
     transferEpic
 )

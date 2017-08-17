@@ -10,17 +10,14 @@ const Balance = ({accounts, balance, onAccountSelected}) => {
     )
 
     return (
-        <div className="balance">
-            Balance of account
-            <br/>
-
-            Address:{' '}
-            <select onChange={event => onAccountSelected(event)}>
-                {accountOptions}
-            </select>
-
-            <br/>
-            Balance: {balance}
+        <div className="balance-box">
+            <h2>Balance of account</h2>
+                <form className="pure-form">
+                    <select onChange={event => onAccountSelected(event)}>
+                        {accountOptions}
+                    </select>
+            <h4 className="balance-text">Balance: {balance}</h4>
+                </form>
         </div>
     )
 }

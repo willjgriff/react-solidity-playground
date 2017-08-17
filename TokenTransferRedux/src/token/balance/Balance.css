@@ -1,3 +1,21 @@
-.balance {
-    margin-top: 10px;
+.balance-box {
+    margin-top: 3em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5em;
+}
+
+.balance-text {
+    font-size: 115%;
+    padding-left: 0.7em;
+    display: inline;
+    vertical-align: middle;
+}
+
+.pure-button {
+    background-color: #61B842;
+    color: white;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
 }

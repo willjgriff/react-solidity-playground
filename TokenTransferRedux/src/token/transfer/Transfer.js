@@ -4,16 +4,13 @@ import {connect} from "react-redux"
 import {transferFunds} from "./TransferActions"
 
 const Transfer = ({onSubmitClicked, isLoading}) => (
-    <div>
-        <form onSubmit={event => onSubmitClicked(event)}>
-            Transfer to another account
-            <br/>
-            <input type="string" id="address" placeholder="Address" className="transfer-address"/>
-            <br/>
-            <input type="number" id="value" placeholder="Value"/>
-            <br/>
-            <input type="submit" value="Transfer"/>
-            <br/>
+    <div className="form-box">
+        <h2>Transfer to</h2>
+
+        <form className="pure-form" onSubmit={event => onSubmitClicked(event)}>
+            <input type="text" id="address" placeholder="Address" className="transfer-address"/>
+            <input type="number" id="value" placeholder="Value" required/>
+            <button type="submit" className="pure-button" disabled={isLoading}>Submit</button>
             {isLoading ?
                 <div className="loader"/>
                 : null}

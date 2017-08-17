@@ -18,18 +18,26 @@ export default class Web3Bridge {
         })
     }
 
-    observableFromEvent(contractEvent) {
-        return Rx.Observable.create(observer => {
-            contractEvent.watch((error, response) => this.web3ObservableFunction(observer, error, response))
-        })
-    }
-
     web3ObservableFunction = (observer, error, response) => {
         if (!error) {
+            console.log("Trans Event")
             observer.next(response)
         } else {
             observer.error(error)
         }
+    }
+
+    observableFromEvent(contractEvent) {
+        return Rx.Observable.create(observer => {
+            contractEvent.watch((error, response) => {
+                if (!error) {
+                    observer.next(response)
+                } else {
+                    observer.error(error)
+                }
+                contractEvent.stopWatching()
+            })
+        })
     }
 
     isEventLogInTransaction(event, tx) {
