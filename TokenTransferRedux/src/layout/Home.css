@@ -43,6 +43,12 @@ code {
     font-family: 'Oswald', 'Arial Narrow', sans-serif;
 }
 
+/* We can align the menu header to the left, but float the
+menu items to the right. */
+.navbar ul {
+    float: right;
+}
+
 .navbar a {
     color: #fff;
 }

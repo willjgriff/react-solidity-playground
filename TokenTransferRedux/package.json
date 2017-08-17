@@ -53,6 +53,7 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.6",
+    "react-router-dom": "^4.1.2",
     "redux": "^3.7.2",
     "redux-devtools": "^3.4.0",
     "redux-logger": "^3.0.6",
