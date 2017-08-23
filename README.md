@@ -8,4 +8,4 @@ I have attempted to adhere to React best practices to ensure modularity and have
 
 Future improvements: Add tests. Allow the user to select the account they want to use. Require that the account benefitting for a specified Youtube username be registered prior to this process elsewhere. More details at the bottom of <a href="https://github.com/willjgriff/solidity-playground">here</a>
 
-<b>TokenTransferRedux</b> - Work in progress. Based on the React Truffle Box (didn't need all the complexity/dependencies of the Redux Auth Truffle Box). Currently interfaces with a standard ERC20 token. Uses basics of Redux including redux-observable to manage state. I intend to add a more complex contract and react-router.
+<b>TokenTransferRedux</b> - Work in progress. Based on the React Truffle Box (didn't need all the complexity/dependencies of the Redux Auth Truffle Box). Interfaces with a standard ERC20 token. Uses basics of Redux including redux-observable to manage state changes and very basic experimentation with react-redux-router.
